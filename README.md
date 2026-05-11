@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+keep.it.inyoureyes is a high-end digital editorial portfolio built with Next.js App Router, TypeScript, Tailwind CSS, GSAP, and Lenis.
 
-## Getting Started
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- GSAP
+- Lenis
+- Local fonts via `next/font/local`
+
+## Development
 
 First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The homepage lives in `src/components/templates/home-page.tsx` and is composed from a simplified Atomic Design structure under `src/components`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Motion
 
-## Learn More
+GSAP drives the intro and reveal animations. Lenis handles smooth scrolling at the app shell level.
 
-To learn more about Next.js, take a look at the following resources:
+## Fonts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project uses local font files from `@fontsource/inter` and `@fontsource/playfair-display` through `next/font/local`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If you want to replace the font styling later, update the local font paths in `src/app/layout.tsx`.
