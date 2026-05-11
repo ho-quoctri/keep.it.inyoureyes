@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../styles/globals.css";
-import { LenisSmoothScrollWrapper } from "@/components/common/lenis-smooth-scroll-wrapper";
-import { CustomCursor } from "@/components/common/custom-cursor";
 import { SitePreloaderProvider } from "@/components/providers/site-preloader-provider";
+import { SitePageShell } from "@/components/layout/site-page-shell";
 
 const inter = localFont({
   src: [
@@ -59,7 +58,7 @@ const playfair = localFont({
   display: "swap",
 });
 
-const dirtyline = localFont({
+const dirtylineFont = localFont({
   src: [
     {
       path: "../assets/fonts/dirtyline.ttf",
@@ -67,7 +66,19 @@ const dirtyline = localFont({
       style: "normal",
     },
   ],
-  variable: "--font-sans",
+  variable: "--font-dirtyline",
+  display: "swap",
+});
+
+const stretchFont = localFont({
+  src: [
+    {
+      path: "../assets/fonts/stretch.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-stretch",
   display: "swap",
 });
 
@@ -107,13 +118,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} ${dirtyline.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${dirtylineFont.variable} ${stretchFont.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
-        <LenisSmoothScrollWrapper>
-          <SitePreloaderProvider>{children}</SitePreloaderProvider>
-        </LenisSmoothScrollWrapper>
-        <CustomCursor />
+        {/* <LenisSmoothScrollWrapper> */}
+          <SitePreloaderProvider>
+            <SitePageShell>{children}</SitePageShell>
+          </SitePreloaderProvider>
+        {/* </LenisSmoothScrollWrapper> */}
+        {/* <CustomCursor /> */}
       </body>
     </html>
   );

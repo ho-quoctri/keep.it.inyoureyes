@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f0e8;
+  --background: #EEEDEA;
+  --primary: #1E1E1E;
+  --secondary: #b6b6b6;
   --foreground: #111111;
   --muted: #6a625a;
   --surface: rgba(255, 255, 255, 0.6);
@@ -17,8 +19,11 @@
   --color-surface: var(--surface);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
   --color-accent-soft: var(--accent-soft);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-dirtyline);
+  --font-secondary: var(--font-stretch);
   --font-display: var(--font-display);
 }
 
@@ -36,7 +41,7 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-dirtyline), var(--font-stretch), sans-serif;
 }
 
 a {
@@ -52,9 +57,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
   font-family: var(--font-body), sans-serif;
-  font-size: 13px;
   letter-spacing: 0.02em;
   color: rgba(17, 17, 17, 0.84);
 }
@@ -86,7 +89,7 @@ a {
   filter: blur(2px);
 }
 
-@media (pointer: fine) {
+/* @media (pointer: fine) {
   body,
   a,
   button,
@@ -142,4 +145,4 @@ a {
     background: transparent;
     border-color: #111111;
   }
-}
+} */
