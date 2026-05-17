@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dirtyline), var(--font-stretch), sans-serif;
+}
+
+body,
+#site-content-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar,
+#site-content-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+body::selection {
+  background: var(--primary);
+  color: var(--background);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

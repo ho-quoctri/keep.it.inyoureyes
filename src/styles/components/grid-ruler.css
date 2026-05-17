@@ -1,0 +1,43 @@
+.grid-ruler {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9985;
+  --ruler-color: rgba(30, 30, 30, 0.55);
+  --ruler-size: 20px;
+}
+
+.grid-ruler__axis {
+  position: fixed;
+  background: rgba(238, 237, 234, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-color: rgba(30, 30, 30, 0.18);
+}
+
+.grid-ruler__axis--top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ruler-size);
+  border-bottom: 1px solid rgba(30, 30, 30, 0.18);
+}
+
+.grid-ruler__axis--left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--ruler-size);
+  border-right: 1px solid rgba(30, 30, 30, 0.18);
+}
+
+.grid-ruler__corner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--ruler-size);
+  height: var(--ruler-size);
+  background: rgba(238, 237, 234, 0.95);
+  border-right: 1px solid rgba(30, 30, 30, 0.18);
+  border-bottom: 1px solid rgba(30, 30, 30, 0.18);
+}

@@ -1,0 +1,12 @@
+.site-content {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity 360ms ease,
+    filter 360ms ease;
+}
+
+.site-content--hidden {
+  opacity: 0;
+  filter: blur(2px);
+}

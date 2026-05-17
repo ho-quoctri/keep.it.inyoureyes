@@ -1,0 +1,26 @@
+.loader-progress-shell {
+  width: min(640px, 82vw);
+}
+
+.loader-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-body), sans-serif;
+  letter-spacing: 0.02em;
+  color: rgba(17, 17, 17, 0.84);
+}
+
+.loader-progress-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: rgba(17, 17, 17, 0.2);
+}
+
+.loader-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  background: var(--primary);
+}

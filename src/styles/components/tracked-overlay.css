@@ -1,0 +1,63 @@
+.tracked-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  --tracked-color: var(--primary);
+  color: var(--tracked-color);
+  font-family: var(--font-body), ui-monospace, monospace;
+}
+
+.tracked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px dashed currentColor;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  will-change: transform, width, height;
+}
+
+.tracked-overlay__corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid currentColor;
+}
+.tracked-overlay__corner--tl {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+.tracked-overlay__corner--tr {
+  top: -2px;
+  right: -2px;
+  border-left: none;
+  border-bottom: none;
+}
+.tracked-overlay__corner--bl {
+  bottom: -2px;
+  left: -2px;
+  border-right: none;
+  border-top: none;
+}
+.tracked-overlay__corner--br {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+.tracked-overlay__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  will-change: transform;
+}

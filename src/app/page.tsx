@@ -1,6 +1,9 @@
+import { HomeHorizontalStage } from "@/components/sections/home-horizontal-stage";
+
 export default function Home() {
-  return (
-    <main>
-    </main>
-  );
+    return (
+        <main>
+            <HomeHorizontalStage />
+        </main>
+    );
 }

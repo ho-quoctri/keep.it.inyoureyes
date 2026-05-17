@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import "../styles/globals.css";
 import { SitePreloaderProvider } from "@/components/providers/site-preloader-provider";
 import { SitePageShell } from "@/components/layout/site-page-shell";
+import { CustomCursor } from "@/components/common/custom-cursor";
+import { TrackedOverlay } from "@/components/common/tracked-overlay";
+import { GridRuler } from "@/components/common/grid-ruler";
 
 const inter = localFont({
   src: [
@@ -87,11 +90,6 @@ export const metadata: Metadata = {
   description:
     "A high-end digital editorial portfolio built with Next.js, Tailwind CSS, GSAP, and Lenis.",
   applicationName: "keep.it.inyoureyes",
-  icons: {
-    icon: "/keepitinyoureyes-logo.jpg",
-    shortcut: "/keepitinyoureyes-logo.jpg",
-    apple: "/keepitinyoureyes-logo.jpg",
-  },
   keywords: [
     "editorial portfolio",
     "digital art direction",
@@ -118,6 +116,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} ${dirtylineFont.variable} ${stretchFont.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
@@ -126,7 +125,9 @@ export default function RootLayout({
             <SitePageShell>{children}</SitePageShell>
           </SitePreloaderProvider>
         {/* </LenisSmoothScrollWrapper> */}
-        {/* <CustomCursor /> */}
+        <CustomCursor/>
+        <TrackedOverlay />
+        <GridRuler />
       </body>
     </html>
   );
