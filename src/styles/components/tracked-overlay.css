@@ -3,7 +3,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 9990;
-  --tracked-color: var(--primary);
+  --tracked-color: var(--color-border);
   color: var(--tracked-color);
   font-family: var(--font-body), ui-monospace, monospace;
 }

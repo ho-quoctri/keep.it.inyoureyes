@@ -1,82 +1,114 @@
 "use client";
 
 import { useRef } from "react";
-import { useRouter } from "next/navigation"; // 1. Import useRouter
+import { useRouter } from "next/navigation";
 import { Hero } from "@/components/sections/hero";
+import { Myself } from "@/components/sections/myself";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 const CONTENT_SCROLLER_ID = "site-content-scroll";
 
 export function HomeHorizontalStage() {
-  const router = useRouter(); // 2. Khởi tạo router
+  const router = useRouter();
   const sectionRef = useRef<HTMLElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
+  // Tạo ref để điều khiển trực tiếp video từ component con Myself
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
   useGSAP(
     () => {
-      if (!sectionRef.current || !trackRef.current) {
-        return;
-      }
+      if (!sectionRef.current || !trackRef.current) return;
 
       const scroller = sectionRef.current.closest<HTMLElement>(`#${CONTENT_SCROLLER_ID}`);
-
-      if (!scroller) {
-        return;
-      }
+      if (!scroller) return;
 
       const track = trackRef.current;
-      const getMaxX = () => Math.max(0, track.scrollWidth - scroller.clientWidth);
+      const getMaxX = () => {
+        if (!trackRef.current || !scroller) return 0;
+        const trackWidth = trackRef.current.getBoundingClientRect().width;
+        return Math.max(0, trackWidth - scroller.clientWidth);
+      };
 
       gsap.set(track, { x: 0 });
 
-      const tween = gsap.to(track, {
+      // 1. Tween chính phụ trách cuộn ngang toàn bộ timeline
+      const mainTween = gsap.to(track, {
         x: () => -getMaxX(),
         ease: "none",
         duration: 1,
+        force3D: true,
       });
 
-      const scrollTrigger = ScrollTrigger.create({
+      // Master ScrollTrigger điều khiển việc Pin và chạy mainTween
+      const mainScrollTrigger = ScrollTrigger.create({
         scroller,
         trigger: sectionRef.current,
         start: "top top",
         end: () => `+=${getMaxX()}`,
         pin: true,
-        animation: tween,
+        animation: mainTween,
         scrub: true,
         anticipatePin: 1,
-        fastScrollEnd: false,
         invalidateOnRefresh: true,
         onLeave: () => {
           gsap.set(track, { x: -getMaxX() });
-          
-          // 3. KÍCH HOẠT CHUYỂN TRANG KHI ĐI HẾT CHIỀU NGANG
-          // Dùng scroll: false để Next.js không tự động giật màn hình lên top
-          router.push("/work", { scroll: false }); 
         },
         onLeaveBack: () => {
           gsap.set(track, { x: 0 });
         },
       });
 
+      // 2. HIỆU ỨNG PHÓNG TO VIDEO VÀ TỰ ĐỘNG CHƠI DỰA TRÊN CONTAINER ANIMATION
+      if (videoRef.current) {
+        const videoElement = videoRef.current;
+
+        gsap.fromTo(
+          videoElement,
+          {
+            scale: 0.1,
+            width: "40%",
+          },
+          {
+            scale: 1, // Phóng to ra toàn bộ vùng chứa
+            ease: "power1.out",
+            width: "100%",
+            scrollTrigger: {
+              scroller,
+              trigger: ".myself-section", // Kích hoạt khi vùng của Myself bắt đầu tiến vào màn hình
+              containerAnimation: mainTween, // BẮT BUỘC: Đồng bộ theo timeline cuộn ngang
+              start: "left right",  // Bắt đầu chạy hiệu ứng khi cạnh trái của section chạm mép phải màn hình
+              end: "center center", // Hoàn thành phóng to khi tâm section nằm giữa màn hình
+              scrub: 0.5,
+              onEnter: () => {
+                videoElement.play().catch((err) => console.log("Video auto-play blocked:", err));
+              }
+            },
+          }
+        );
+      }
+
       const refreshOnLoad = () => ScrollTrigger.refresh();
       window.addEventListener("load", refreshOnLoad);
 
       return () => {
         window.removeEventListener("load", refreshOnLoad);
-        scrollTrigger.kill();
-        tween.kill();
+        mainScrollTrigger.kill();
+        mainTween.kill();
       };
     },
-    { scope: sectionRef, dependencies: [router] } // 4. Thêm router vào dependencies
+    { scope: sectionRef, dependencies: [router] }
   );
 
   return (
     <section ref={sectionRef} className="relative h-screen overflow-hidden">
-      <div ref={trackRef} className="flex h-full w-max will-change-transform pr-[10vw]">
-        <div className="flex h-screen w-screen items-end justify-start pl-10 pb-10">
+      <div ref={trackRef} className="flex h-full w-max justify-center will-change-transform">
+        <div className="flex h-full w-[80vw] items-end justify-start pl-10 pb-10">
           <Hero />
         </div>
-        <div className="w-[20px] h-screen flex-shrink-0" />
+        <div className="flex h-full myself-section ">
+          <Myself ref={videoRef} />
+        </div>
       </div>
     </section>
   );

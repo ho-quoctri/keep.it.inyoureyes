@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @import "./tokens.css";
+@import "./satoshi.css";
 @import "./base.css";
 
 @import "./components/site-content.css";

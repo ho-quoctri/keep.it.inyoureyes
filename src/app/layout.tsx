@@ -6,6 +6,7 @@ import { SitePageShell } from "@/components/layout/site-page-shell";
 import { CustomCursor } from "@/components/common/custom-cursor";
 import { TrackedOverlay } from "@/components/common/tracked-overlay";
 import { GridRuler } from "@/components/common/grid-ruler";
+import { satoshi } from "./fonts";
 
 const inter = localFont({
   src: [
@@ -117,7 +118,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} ${dirtylineFont.variable} ${stretchFont.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${dirtylineFont.variable} ${stretchFont.variable} ${satoshi.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         {/* <LenisSmoothScrollWrapper> */}

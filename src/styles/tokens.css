@@ -5,7 +5,7 @@
   --foreground: var(--primary);
   --muted: #6a625a;
   --surface: rgba(255, 255, 255, 0.6);
-  --border: rgba(17, 17, 17, 0.12);
+  --border: #A5FF04;
   --accent: #9d5c34;
   --accent-soft: #c98a63;
 }
@@ -22,5 +22,6 @@
   --color-accent-soft: var(--accent-soft);
   --font-sans: var(--font-dirtyline);
   --font-secondary: var(--font-stretch);
+  --font-primary: var(--font-satoshi);
   --font-display: var(--font-display);
 }
