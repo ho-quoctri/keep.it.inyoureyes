@@ -28,7 +28,7 @@ export const EyesSlide = () => {
     return (
         <div className="flex h-full items-center">
             <div>*(</div>
-            <div className="pt-4">
+            <div className="pt-4 pl-2">
                 <Image
                     src={frames[frameIndex]}
                     alt="Eyes Slide"
