@@ -8,24 +8,76 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(Observer);
 }
 
-// Mẫu data ảnh demo (Thay bằng ảnh portfolio của bạn)
-const IMAGES = [
-  "https://picsum.photos/id/10/300/400",
-  "https://picsum.photos/id/11/300/400",
-  "https://picsum.photos/id/12/300/400",
-  "https://picsum.photos/id/13/300/400",
-  "https://picsum.photos/id/14/300/400",
-  "https://picsum.photos/id/15/300/400",
-  "https://picsum.photos/id/16/300/400",
-  "https://picsum.photos/id/17/300/400",
-  "https://picsum.photos/id/18/300/400",
-  "https://picsum.photos/id/19/300/400",
-  "https://picsum.photos/id/20/300/400",
-  "https://picsum.photos/id/21/300/400",
-  "https://picsum.photos/id/22/300/400",
-  "https://picsum.photos/id/23/300/400",
-  "https://picsum.photos/id/24/300/400",
+const PHOTOS = [
+  {
+    id: 1,
+    src: "/images/gallery/image-1.webp",
+    width: 420,
+    height: 580,
+  },
+  {
+    id: 2,
+    src: "/images/gallery/image-2.webp",
+    width: 320,
+    height: 420,
+  },
+  {
+    id: 3,
+    src: "/images/gallery/image-3.webp",
+    width: 520,
+    height: 340,
+  },
+  {
+    id: 4,
+    src: "/images/gallery/image-4.webp",
+    width: 260,
+    height: 380,
+  },
+  {
+    id: 5,
+    src: "/images/gallery/image-5.webp",
+    width: 460,
+    height: 600,
+  },
+  {
+    id: 6,
+    src: "/images/gallery/image-6.webp",
+    width: 380,
+    height: 260,
+  },
+  {
+    id: 7,
+    src: "/images/gallery/image-7.webp",
+    width: 300,
+    height: 450,
+  },
+  {
+    id: 8,
+    src: "/images/gallery/image-8.webp",
+    width: 540,
+    height: 360,
+  },
+  {
+    id: 9,
+    src: "/images/gallery/image-9.webp",
+    width: 340,
+    height: 500,
+  },
+  {
+    id: 10,
+    src: "/images/gallery/image-10.webp",
+    width: 620,
+    height: 420,
+  },
 ];
+
+type PhotoNode = {
+  x: number;
+  y: number;
+  z: number;
+  width: number;
+  height: number;
+};
 
 export const PhotoGlobe = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,172 +85,266 @@ export const PhotoGlobe = () => {
 
   useEffect(() => {
     const globe = globeRef.current;
+
     if (!globe) return;
 
     const items = globe.querySelectorAll(".globe-item");
-    const total = items.length;
-    const radius = 350; // Bán kính quả cầu (pixel) - tăng giảm tùy ý
 
-    // Khởi tạo vị trí 3D cố định của từng item dựa trên phân phối Fibonacci
-    const baseCoords: Array<{ x: number; y: number; z: number }> = [];
-    const phi = Math.PI * (Math.sqrt(5) - 1); // Tỷ lệ vàng
+    const baseCoords: PhotoNode[] = [];
 
-    items.forEach((item, i) => {
-      const y = 1 - (i / (total - 1)) * 2; // y chạy từ 1 đến -1
-      const radiusAtY = Math.sqrt(1 - y * y); // Bán kính của đường tròn tại cao độ y
+    /**
+     * Layout cố định
+     * đẹp hơn random hoàn toàn
+     */
+    const layout = [
+      { x: -450, y: -220, z: 700 },
+      { x: -150, y: -120, z: 500 },
+      { x: 280, y: -180, z: 800 },
+      { x: 480, y: 50, z: 300 },
 
-      const theta = phi * i; // Góc quay quanh trục Y
+      { x: -380, y: 250, z: -100 },
+      { x: -80, y: 280, z: 250 },
 
-      const x = Math.cos(theta) * radiusAtY;
-      const z = Math.sin(theta) * radiusAtY;
+      { x: 280, y: 250, z: 700 },
+      { x: 500, y: 320, z: -200 },
 
-      // Nhân với bán kính thực tế của quả cầu
+      { x: -100, y: -350, z: 600 },
+      { x: 150, y: -320, z: -300 },
+    ];
+
+    PHOTOS.forEach((photo, index) => {
+      const pos = layout[index];
+
       baseCoords.push({
-        x: x * radius,
-        y: y * radius,
-        z: z * radius,
+        x: pos.x,
+        y: pos.y,
+        z: pos.z,
+
+        width: photo.width,
+        height: photo.height,
       });
     });
 
-    // Trạng thái góc quay hiện tại và mục tiêu (để làm hiệu ứng đuổi mượt - Smooth Follow)
-    const rotation = { x: 0, y: 0 };
-    const targetRotation = { x: 0, y: 0 };
+    const rotation = {
+      x: 0,
+      y: 0,
+    };
 
-    // Hàm cập nhật render tọa độ CSS từng frame bằng GSAP ticker (tối ưu hơn requestAnimationFrame thường)
+    const targetRotation = {
+      x: 0,
+      y: 0,
+    };
+
+    const perspective = 2600;
+
     const updateGlobe = () => {
-      // Nội suy tuyến tính (Linear Interpolation - Lerp) để tạo độ mượt (Inertia/Damping)
-      rotation.x += (targetRotation.x - rotation.x) * 0.08;
-      rotation.y += (targetRotation.y - rotation.y) * 0.08;
+      rotation.x +=
+        (targetRotation.x - rotation.x) * 0.08;
 
-      // Góc quay tính bằng Radian
-      const radX = (rotation.x * Math.PI) / 180;
-      const radY = (rotation.y * Math.PI) / 180;
+      rotation.y +=
+        (targetRotation.y - rotation.y) * 0.08;
+
+      const radX =
+        (rotation.x * Math.PI) / 180;
+
+      const radY =
+        (rotation.y * Math.PI) / 180;
 
       const cosX = Math.cos(radX);
       const sinX = Math.sin(radX);
+
       const cosY = Math.cos(radY);
       const sinY = Math.sin(radY);
 
       items.forEach((item, i) => {
         const base = baseCoords[i];
 
-        // 1. Xoay quanh trục Y (Horizontal)
-        let x1 = base.x * cosY - base.z * sinY;
-        let z1 = base.z * cosY + base.x * sinY;
+        const x1 =
+          base.x * cosY -
+          base.z * sinY;
 
-        // 2. Xoay quanh trục X (Vertical)
-        let y2 = base.y * cosX - z1 * sinX;
-        let z2 = z1 * cosX + base.y * sinX;
+        const z1 =
+          base.z * cosY +
+          base.x * sinY;
 
-        // Tính toán độ mờ (Opacity) và độ phóng to (Scale) dựa trên trục Z (độ sâu)
-        // Khi z2 càng lớn (càng gần camera) -> càng rõ và to. z2 nhỏ (ở mặt sau) -> mờ đi.
-        const normalizedZ = (z2 + radius) / (2 * radius); // Đưa về khoảng 0 -> 1
-        const opacity = gsap.utils.mapRange(0, 1, 0.15, 1, normalizedZ);
-        const scale = gsap.utils.mapRange(0, 1, 0.5, 1.1, normalizedZ);
+        const y2 =
+          base.y * cosX -
+          z1 * sinX;
 
-        // Đẩy style trực tiếp bằng GSAP để triệt tiêu việc React Re-render, giữ 60fps mượt mà
+        const z2 =
+          z1 * cosX +
+          base.y * sinX;
+
+        const depth =
+          perspective /
+          (perspective - z2);
+
+        const normalizedZ =
+  gsap.utils.normalize(
+    -800,
+    1200,
+    z2
+  );
+
+const scaleValue =
+  gsap.utils.interpolate(
+    0.55,
+    1,
+    normalizedZ
+  );
+
         gsap.set(item, {
-          x: x1,
-          y: y2,
-          z: z2,
-          scale: scale,
-          opacity: opacity,
-          // Quyết định layer nào đè lên layer nào trong không gian 2D dựa trên độ sâu Z thực tế
-          zIndex: Math.round(z2 + radius),
+          x: x1 * depth,
+          y: y2 * depth,
+          scale: scaleValue * depth, // Kết hợp depth và scale theo vị trí
+          zIndex: Math.round(z2 + 10000),
         });
       });
     };
 
-    // Đăng ký hàm cập nhật vào bộ đếm thời gian của GSAP
     gsap.ticker.add(updateGlobe);
 
-    // Tự động xoay chậm quả cầu khi không tương tác
-    const autoRotate = gsap.to(targetRotation, {
-      y: "+=360",
-      duration: 50,
-      ease: "none",
-      repeat: -1,
-    });
+    const autoRotate = gsap.to(
+      targetRotation,
+      {
+        y: "+=360",
+        duration: 80,
+        ease: "none",
+        repeat: -1,
+      }
+    );
 
-    // Cấu hình kéo thả (Drag) và lăn chuột (Wheel) thông qua GSAP Observer
+    let delayedCall:
+      | gsap.core.Tween
+      | undefined;
+
     const obs = Observer.create({
       target: containerRef.current,
-      type: "pointer,touch,wheel",
-      onChange: (self) => {
-        // Tạm dừng tự động xoay khi người dùng can thiệp trực tiếp
-        autoRotate.pause();
 
-        if (self.event.type === "wheel") {
-          // Lăn chuột xoay theo trục Y
-          targetRotation.y += self.deltaY * 0.1;
+      type: "pointer,touch",
+
+      onChange: (self) => {
+        gsap.killTweensOf(targetRotation);
+
+        if (
+          self.event &&
+          self.event.type === "wheel"
+        ) {
+          targetRotation.y +=
+            self.deltaY * 0.1;
         } else {
-          // Kéo thả tính toán theo Delta di chuyển chuột/vân tay
-          targetRotation.y += self.deltaX * 0.2;
-          targetRotation.x -= self.deltaY * 0.2;
+          targetRotation.y +=
+            self.deltaX * 0.2;
+
+          targetRotation.x -=
+            self.deltaY * 0.2;
         }
 
-        // Giới hạn góc xoay lên/xuống để tránh quả cầu bị lộn nhào mất phương hướng
-        targetRotation.x = gsap.utils.clamp(-60, 60, targetRotation.x);
+        targetRotation.x =
+          gsap.utils.clamp(
+            -60,
+            60,
+            targetRotation.x
+          );
 
-        // Kích hoạt lại hiệu ứng tự xoay sau 2 giây nếu người dùng buông tay không tương tác nữa
-        gsap.killTweensOf(resumeAutoRotate);
-        gsap.delayedCall(2, resumeAutoRotate);
+        delayedCall?.kill();
+
+        delayedCall =
+          gsap.delayedCall(
+            0.2,
+            resumeAutoRotate
+          ) as unknown as gsap.core.Tween;
       },
     });
 
     function resumeAutoRotate() {
-      autoRotate.play();
-      // Làm mượt góc quay mục tiêu tiếp tục từ vị trí hiện tại
       gsap.to(targetRotation, {
         y: targetRotation.y + 360,
-        duration: 50,
+        duration: 80,
         ease: "none",
         repeat: -1,
-        overwrite: "auto",
       });
     }
 
-    // Dọn dẹp bộ nhớ khi Component bị Unmount (Đặc biệt quan trọng trong React)
     return () => {
       gsap.ticker.remove(updateGlobe);
+
       autoRotate.kill();
+
       obs.kill();
+
+      delayedCall?.kill();
     };
   }, []);
 
   return (
     <section
       ref={containerRef}
-      className="relative w-screen h-screen bg-background overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
-      style={{ perspective: "1000px" }} // Tạo chiều sâu không gian cho CSS 3D
+      className="
+        relative
+        w-screen
+        h-screen
+        overflow-hidden
+        bg-background
+        flex
+        items-center
+        justify-center
+        cursor-grab
+        active:cursor-grabbing
+        select-none
+      "
+      style={{
+        perspective: "2600px",
+      }}
     >
-      {/* Container trung tâm của quả cầu */}
       <div
         ref={globeRef}
-        className="relative w-0 h-0 flex items-center justify-center"
-        style={{ transformStyle: "preserve-3d" }}
+        className="
+          relative
+          w-0
+          h-0
+        "
+        style={{
+          transformStyle:
+            "preserve-3d",
+        }}
       >
-        {IMAGES.map((src, index) => (
+        {PHOTOS.map((photo) => (
           <div
-            key={index}
-            className="globe-item absolute interactive w-48 h-48 rounded-xl overflow-hidden  group"
+            key={photo.id}
+            className="
+              globe-item
+              absolute
+              w-[200px]
+              h-auto
+              overflow-hidden
+              shadow-xl
+              group
+            "
             style={{
-              willChange: "transform, opacity", // Báo hiệu trình duyệt tối ưu phần cứng (GPU)
+              willChange:
+                "transform",
             }}
           >
             <img
-              src={src}
-              alt={`Project ${index}`}
-              className="w-full h-full object-cover  transition-all duration-500 scale-105 group-hover:scale-100"
+              src={photo.src}
+              alt={`Project ${photo.id}`}
               draggable={false}
-            />            
+              className="
+              w-full
+              h-full
+              object-cover
+              grayscale
+              brightness-75
+              hover:grayscale-0
+              hover:brightness-100
+              transition-all
+              duration-700
+              ease-out
+            "
+            />
           </div>
         ))}
-      </div>
-
-      {/* Gợi ý tương tác tinh tế góc màn hình */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted font-primary text-xs tracking-wider uppercase pointer-events-none opacity-60 animate-pulse">
-        [ Drag or Wheel to Spin Globe ]
       </div>
     </section>
   );
