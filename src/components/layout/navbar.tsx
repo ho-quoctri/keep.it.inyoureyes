@@ -9,6 +9,14 @@ interface NavbarProps {
   isClickScrolling: React.MutableRefObject<boolean>;
 }
 
+// clamp(min, preferred, max)
+// preferred dùng vw để scale liên tục theo viewport width
+// min/max giữ kích thước trong giới hạn hợp lý
+const FONT_SIZES = {
+  active:   "clamp(32px, 5vw, 80px)",
+  inactive: "clamp(18px, 2.8vw, 40px)",
+};
+
 export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, NavbarProps>(
   ({ scrollContainerRef, isClickScrolling }, ref) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -28,8 +36,8 @@ export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, Na
 
         if (index === activeIndex) {
           gsap.to(element, {
-            fontSize: "80px",
-            lineHeight: "80px",
+            fontSize: FONT_SIZES.active,
+            lineHeight: FONT_SIZES.active,
             color: "var(--primary)",
             fontWeight: "700",
             duration: 0.4,
@@ -37,8 +45,8 @@ export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, Na
           });
         } else {
           gsap.to(element, {
-            fontSize: "40px",
-            lineHeight: "40px",
+            fontSize: FONT_SIZES.inactive,
+            lineHeight: FONT_SIZES.inactive,
             color: "var(--secondary)",
             fontWeight: "400",
             duration: 0.4,
@@ -49,31 +57,23 @@ export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, Na
     }, [activeIndex]);
 
     const handleItemClick = (index: number) => {
-      // 1. Cập nhật index đích ngay lập tức để Navbar đổi hiệu ứng chữ ngay khi vừa click
       setActiveIndex(index);
-      
+
       const container = scrollContainerRef.current;
       const targetSection = document.getElementById(`section-${index}`);
 
       if (targetSection && container) {
-        // 2. Bật cờ khóa: Báo cho ScrollTrigger biết đang cuộn chủ động do Click
         isClickScrolling.current = true;
 
-        // Xóa timeout cũ nếu người dùng click liên tục nhiều tab
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
 
-        const targetOffsetTop = targetSection.offsetTop;
-        
         container.scrollTo({
-          top: targetOffsetTop,
-          behavior: "smooth"
+          top: targetSection.offsetTop,
+          behavior: "smooth",
         });
 
-        // 3. Tạo cơ chế phát hiện cuộn hoàn tất (Scroll End)
-        // Khi container ngừng dịch chuyển trong khoảng 100ms, cờ khóa sẽ được hạ xuống an toàn
         const handleScrollEnd = () => {
           if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-          
           scrollTimeoutRef.current = setTimeout(() => {
             isClickScrolling.current = false;
             container.removeEventListener("scroll", handleScrollEnd);
@@ -84,7 +84,6 @@ export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, Na
       }
     };
 
-    // Dọn dẹp bộ nhớ khi unmount component
     useEffect(() => {
       return () => {
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
@@ -101,7 +100,7 @@ export const Navbar = forwardRef<{ setActiveIndex: (index: number) => void }, Na
             onClick={() => handleItemClick(index)}
             className="capitalize interactive cursor-pointer transition-colors duration-200 origin-right"
             key={item.name}
-            style={{ fontSize: "40px", lineHeight: "40px" }}
+            style={{ fontSize: FONT_SIZES.inactive, lineHeight: FONT_SIZES.inactive }}
           >
             {item.name},
           </div>

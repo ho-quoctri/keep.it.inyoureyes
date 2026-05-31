@@ -60,7 +60,7 @@ export default function ContentLayout() {
 
   return (
     <div className="flex w-screen h-screen overflow-hidden bg-background relative">
-      <aside className="w-[22vw] h-full p-8 flex flex-col justify-center border-r border-white/5 z-10">
+      <aside className="md:w-[25vw] h-full p-8 flex flex-col justify-center border-r border-white/5 z-10">
         {/* Truyền ref biến cờ xuống Navbar */}
         <Navbar 
           ref={navbarRef} 
@@ -71,7 +71,7 @@ export default function ContentLayout() {
 
       <main 
         ref={mainScrollRef} 
-        className="w-[78vw] custom-scrollbar  h-full overflow-y-auto p-12 relative custom-scrollbar"
+        className="custom-scrollbar  h-full overflow-y-auto p-12 relative custom-scrollbar"
         style={{ scrollBehavior: 'smooth' }}
       >
         <div ref={workRef} id="section-0" className="min-h-screen py-16">

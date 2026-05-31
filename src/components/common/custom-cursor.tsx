@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap"; // Điều chỉnh đường dẫn import GSAP tùy cấu hình dự án của bạn
 
 const LOCK_SELECTOR = ".interactive";
 const TRACK_SELECTOR = ".trackable";
@@ -11,6 +11,7 @@ const LOCK_PADDING = 8;
 
 export function CustomCursor() {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const axisRef = useRef<HTMLDivElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
   const dotRef = useRef<HTMLDivElement | null>(null);
   const labelRef = useRef<HTMLDivElement | null>(null);
@@ -22,13 +23,16 @@ export function CustomCursor() {
     if (!mediaQuery.matches) return;
 
     const root = rootRef.current;
+    const axis = axisRef.current;
     const box = boxRef.current;
     const dot = dotRef.current;
     const label = labelRef.current;
-    if (!root || !box || !dot || !label) return;
+    if (!root || !axis || !box || !dot || !label) return;
 
     const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const dotPos = { x: mouse.x, y: mouse.y };
+    const currentPos = { x: mouse.x, y: mouse.y };
+    
+    // Khởi tạo state cho chiếc hộp Lock mục tiêu
     const boxState = {
       x: mouse.x - AMBIENT_SIZE / 2,
       y: mouse.y - AMBIENT_SIZE / 2,
@@ -82,21 +86,9 @@ export function CustomCursor() {
       if (!lockedEl) return;
       lockedEl = null;
       root.classList.remove("custom-cursor--locked");
-      tweenBoxTo(
-        {
-          x: mouse.x - AMBIENT_SIZE / 2,
-          y: mouse.y - AMBIENT_SIZE / 2,
-          w: AMBIENT_SIZE,
-          h: AMBIENT_SIZE,
-        },
-        0.35
-      );
     };
 
-    const findNearestTrackable = (
-      x: number,
-      y: number
-    ): HTMLElement | null => {
+    const findNearestTrackable = (x: number, y: number): HTMLElement | null => {
       const nodes = document.querySelectorAll<HTMLElement>(TRACK_SELECTOR);
       let best: HTMLElement | null = null;
       let bestDist = TRACK_PROXIMITY;
@@ -148,37 +140,46 @@ export function CustomCursor() {
     };
 
     const tick = () => {
-      const dotLerp = 0.32;
-      dotPos.x += (mouse.x - dotPos.x) * dotLerp;
-      dotPos.y += (mouse.y - dotPos.y) * dotLerp;
+      const lerp = 0.28;
+      currentPos.x += (mouse.x - currentPos.x) * lerp;
+      currentPos.y += (mouse.y - currentPos.y) * lerp;
 
+      // 1. Di chuyển trục XY theo tọa độ chuột
+      axis.style.transform = `translate3d(${currentPos.x}px, ${currentPos.y}px, 0) translate(-50%, -50%)`;
+      axis.style.width = `${window.innerWidth * 2}px`;
+      axis.style.height = `${window.innerHeight * 2}px`;
+
+      // 2. Di chuyển dấu cộng ở trung tâm trục
+      dot.style.transform = `translate3d(${currentPos.x}px, ${currentPos.y}px, 0) translate(-50%, -50%)`;
+
+      // 3. Xử lý khung hộp Lock khi hover mục tiêu
       if (!lockedEl) {
-        const boxLerp = 0.22;
-        boxState.x += (mouse.x - AMBIENT_SIZE / 2 - boxState.x) * boxLerp;
-        boxState.y += (mouse.y - AMBIENT_SIZE / 2 - boxState.y) * boxLerp;
-        boxState.w += (AMBIENT_SIZE - boxState.w) * boxLerp;
-        boxState.h += (AMBIENT_SIZE - boxState.h) * boxLerp;
+        // Khi không hover, thu nhỏ hộp ẩn về tâm chuột theo hiệu ứng lerp mượt
+        boxState.x += (mouse.x - boxState.w / 2 - boxState.x) * lerp;
+        boxState.y += (mouse.y - boxState.h / 2 - boxState.y) * lerp;
+        boxState.w += (0 - boxState.w) * lerp;
+        boxState.h += (0 - boxState.h) * lerp;
       }
 
-      dot.style.transform = `translate3d(${dotPos.x}px, ${dotPos.y}px, 0) translate(-50%, -50%)`;
       box.style.transform = `translate3d(${boxState.x}px, ${boxState.y}px, 0)`;
       box.style.width = `${boxState.w}px`;
       box.style.height = `${boxState.h}px`;
 
+      // 4. Nhãn text HUD hiển thị thông tin kĩ thuật số
       if (lockedEl) {
         const rect = lockedEl.getBoundingClientRect();
         label.textContent = `OBJ_LOCK | W: ${Math.round(rect.width)}px H: ${Math.round(
           rect.height
         )}px | X: ${Math.round(rect.left)} Y: ${Math.round(rect.top)}`;
+        label.style.transform = `translate3d(${boxState.x + boxState.w + 12}px, ${
+          boxState.y + boxState.h - 14
+        }px, 0)`;
       } else {
         label.textContent = `TRK_X: ${Math.round(mouse.x)} / TRK_Y: ${Math.round(
           mouse.y
         )}`;
+        label.style.transform = `translate3d(${currentPos.x + 18}px, ${currentPos.y + 18}px, 0)`;
       }
-
-      label.style.transform = `translate3d(${boxState.x + boxState.w + 10}px, ${
-        boxState.y + boxState.h - 14
-      }px, 0)`;
 
       rafId = requestAnimationFrame(tick);
     };
@@ -202,13 +203,21 @@ export function CustomCursor() {
 
   return (
     <div ref={rootRef} className="custom-cursor" aria-hidden="true">
+      {/* Trục tọa độ XY cắt nhau */}
+      <div ref={axisRef} className="custom-cursor__axis" />
+      
+      {/* Khung hộp Lock với 4 góc (Sẽ phóng to ra khi hover) */}
       <div ref={boxRef} className="custom-cursor__box">
         <span className="custom-cursor__corner custom-cursor__corner--tl" />
         <span className="custom-cursor__corner custom-cursor__corner--tr" />
         <span className="custom-cursor__corner custom-cursor__corner--bl" />
         <span className="custom-cursor__corner custom-cursor__corner--br" />
       </div>
-      <div ref={dotRef} className="custom-cursor__dot" />
+      
+      {/* Tâm giao nhau: Dấu cộng đậm */}
+      <div ref={dotRef} className="custom-cursor__crosshair" />
+      
+      {/* Nhãn chữ */}
       <div ref={labelRef} className="custom-cursor__label" />
     </div>
   );
