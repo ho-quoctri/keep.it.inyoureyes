@@ -467,7 +467,7 @@ export const PhotoGlobe = () => {
       tracking-wide
     "
         >
-          A Software Design Studio
+          Creative Studio
         </div>
 
         <div

@@ -38,12 +38,14 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} className="mx-auto w-full flex items-center justify-center max-w-full overflow-hidden">
-      <div className="font-secondary text-[clamp(40px,5.4vw,100px)] flex items-center leading-[1.05] text-center tracking-tighter">
-        <div data-hero-scramble>CREATIVE</div>
+      <div className="font-secondary text-[clamp(40px,5.4vw,100px)] flex flex-col items-center leading-[1.05] text-center tracking-tighter">
         <div className="flex items-center gap-[0.2em]">
           <div className="flex items-center"><EyesSlide /></div>
         </div>
-        <div data-hero-scramble>DEVELOPER</div>
+        <div data-hero-scramble>branding</div>
+        <div data-hero-scramble>web/app design</div>
+        <div data-hero-scramble>motion</div>
+        <div data-hero-scramble>development</div>
       </div>
     </section>
   );
