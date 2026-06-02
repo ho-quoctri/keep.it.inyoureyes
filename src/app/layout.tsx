@@ -87,12 +87,12 @@ const stretchFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "keep.it.inyoureyes | High-End Digital Editorial Portfolio",
+  title: "keep.it.inyoureyes | A creative design studio",
   description:
-    "A high-end digital editorial portfolio built with Next.js, Tailwind CSS, GSAP, and Lenis.",
+    "A creative design studio specializing in digital editorial projects, built with Next.js, Tailwind CSS, GSAP, and Lenis.",
   applicationName: "keep.it.inyoureyes",
   keywords: [
-    "editorial portfolio",
+    "creative design studio",
     "digital art direction",
     "motion design",
     "next.js",
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
   authors: [{ name: "keep.it.inyoureyes" }],
   creator: "keep.it.inyoureyes",
   openGraph: {
-    title: "keep.it.inyoureyes | High-End Digital Editorial Portfolio",
+    title: "keep.it.inyoureyes | A creative design studio",
     description:
       "Editorial web presence with intentional motion, smooth scrolling, and refined typography.",
     type: "website",

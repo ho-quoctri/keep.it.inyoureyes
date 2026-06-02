@@ -1,14 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { type Ref, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
+import { useSitePreloader } from "@/components/providers/site-preloader-provider";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(Observer);
 }
 
-const PHOTOS = [
+type PhotoMedia = {
+  id: number;
+  src: string;
+  width: number;
+  height: number;
+};
+
+const PHOTOS: PhotoMedia[] = [
   {
     id: 1,
     src: "/images/gallery/image-1.webp",
@@ -17,7 +26,7 @@ const PHOTOS = [
   },
   {
     id: 2,
-    src: "/images/gallery/image-2.webp",
+    src: "/images/gallery/image-24.webp",
     width: 320,
     height: 420,
   },
@@ -41,7 +50,7 @@ const PHOTOS = [
   },
   {
     id: 6,
-    src: "/images/gallery/image-6.webp",
+    src: "/images/gallery/image-29.webp",
     width: 340,
     height: 260,
   },
@@ -71,37 +80,37 @@ const PHOTOS = [
   },
   {
     id: 11,
-    src: "/images/gallery/image-11.webp",
+    src: "/images/gallery/image-28.webp",
     width: 360,
     height: 520,
   },
   {
     id: 12,
-    src: "/images/gallery/image-12.webp",
+    src: "/images/gallery/image-13.webp",
     width: 340,
     height: 360,
   },
   {
     id: 13,
-    src: "/images/gallery/image-13.webp",
+    src: "/images/gallery/image-30.webp",
     width: 300,
     height: 430,
   },
   {
     id: 14,
-    src: "/images/gallery/image-14.webp",
+    src: "/images/gallery/image-27.webp",
     width: 360,
     height: 300,
   },
   {
     id: 15,
-    src: "/images/gallery/image-15.webp",
+    src: "/images/gallery/image-25.webp",
     width: 320,
     height: 560,
   },
   {
     id: 16,
-    src: "/images/gallery/image-16.webp",
+    src: "/images/gallery/image-26.webp",
     width: 340,
     height: 280,
   },
@@ -119,7 +128,7 @@ const PHOTOS = [
   },
   {
     id: 19,
-    src: "/images/gallery/image-19.webp",
+    src: "/images/gallery/image-14.webp",
     width: 360,
     height: 540,
   },
@@ -147,6 +156,12 @@ const PHOTOS = [
     width: 370,
     height: 620,
   },
+  {
+    id: 24,
+    src: "/images/gallery/image-12.webp",
+    width: 360,
+    height: 420,
+  }
 ];
 
 type PhotoNode = {
@@ -157,9 +172,37 @@ type PhotoNode = {
   height: number;
 };
 
-export const PhotoGlobe = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
+type PhotoGlobeProps = {
+  sectionRef?: Ref<HTMLElement>;
+  globeRef?: Ref<HTMLDivElement>;
+  heroVideoFrameRef?: Ref<HTMLDivElement>;
+  heroVideoRef?: Ref<HTMLVideoElement>;
+  dragHintRef?: Ref<HTMLDivElement>;
+};
+
+function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
+  if (!ref) {
+    return;
+  }
+
+  if (typeof ref === "function") {
+    ref(value);
+    return;
+  }
+
+  ref.current = value;
+}
+
+export const PhotoGlobe = ({
+  sectionRef,
+  globeRef: externalGlobeRef,
+  heroVideoFrameRef,
+  heroVideoRef,
+  dragHintRef,
+}: PhotoGlobeProps) => {
+  const containerRef = useRef<HTMLElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
+  const { isLoading } = useSitePreloader();
 
   useEffect(() => {
     const globe = globeRef.current;
@@ -208,6 +251,8 @@ export const PhotoGlobe = () => {
       { x: -350, y: 650, z: -600 },
       { x: 350, y: -650, z: -800 },
       { x: 950, y: 450, z: -500 },
+      { x: 550, y: 450, z: -500 },
+
     ];
 
     PHOTOS.forEach((photo, index) => {
@@ -305,15 +350,18 @@ export const PhotoGlobe = () => {
 
     gsap.ticker.add(updateGlobe);
 
-    const autoRotate = gsap.to(
-      targetRotation,
-      {
+    let autoRotate: gsap.core.Tween | null = null;
+
+    function startAutoRotate() {
+      autoRotate?.kill();
+
+      autoRotate = gsap.to(targetRotation, {
         y: "+=360",
         duration: 80,
         ease: "none",
         repeat: -1,
-      }
-    );
+      });
+    }
 
     let delayedCall:
       | gsap.core.Tween
@@ -357,30 +405,39 @@ export const PhotoGlobe = () => {
           ) as unknown as gsap.core.Tween;
       },
     });
+    
+  if (isLoading) return;
+
+  gsap.timeline({
+  onComplete: startAutoRotate,
+})
+.to(targetRotation, {
+  y: 600, // 2 vòng
+  duration: 2.8,
+  ease: "power2.out",
+}, 0);
 
     function resumeAutoRotate() {
-      gsap.to(targetRotation, {
-        y: targetRotation.y + 360,
-        duration: 80,
-        ease: "none",
-        repeat: -1,
-      });
+      startAutoRotate();
     }
 
     return () => {
       gsap.ticker.remove(updateGlobe);
 
-      autoRotate.kill();
+      autoRotate?.kill();
 
       obs.kill();
 
       delayedCall?.kill();
     };
-  }, []);
+  }, [isLoading]);
 
   return (
     <section
-      ref={containerRef}
+      ref={(node) => {
+        containerRef.current = node;
+        assignRef(sectionRef, node);
+      }}
       className="
         relative
         w-screen
@@ -399,7 +456,10 @@ export const PhotoGlobe = () => {
       }}
     >
       <div
-        ref={globeRef}
+        ref={(node) => {
+          globeRef.current = node;
+          assignRef(externalGlobeRef, node);
+        }}
         className="
           relative
           w-0
@@ -410,13 +470,13 @@ export const PhotoGlobe = () => {
             "preserve-3d",
         }}
       >
-        {PHOTOS.map((photo) => (
+        {PHOTOS.map((photo: PhotoMedia) => (
           <div
             key={photo.id}
             className="
               globe-item
               absolute
-              w-[200px]
+              w-50
               h-auto
               overflow-hidden
               shadow-xl
@@ -427,13 +487,15 @@ export const PhotoGlobe = () => {
                 "transform",
             }}
           >
-            <img
+            <Image
               src={photo.src}
               alt={`Project ${photo.id}`}
+              width={photo.width}
+              height={photo.height}
               draggable={false}
               className="
               w-full
-              h-full
+              h-auto
               object-cover
               brightness-75
               hover:grayscale-0
@@ -455,22 +517,47 @@ export const PhotoGlobe = () => {
     -translate-y-1/2
     text-center
     pointer-events-none
-    z-[999999]
+    z-999999
     mix-blend-difference
   "
       >
         <div
           className="
+      flex
+      items-center
+      justify-center
       text-4xl
       font-secondary
       text-white
       tracking-wide
     "
         >
-          Creative Studio
+          creative studio
         </div>
 
         <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        >
+          <div
+            ref={(node) => assignRef(heroVideoFrameRef, node)}
+            className="flex h-0 w-0 items-center justify-center overflow-hidden opacity-0"
+          >
+            <video
+              ref={(node) => assignRef(heroVideoRef, node)}
+              src="/videos/myself-video.webm"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              data-shared-video-source="true"
+              className="h-full w-full scale-125 object-cover"
+            />
+          </div>
+        </div>
+
+        <div
+          ref={(node) => assignRef(dragHintRef, node)}
           className="
       mt-2
       text-sm
@@ -479,7 +566,7 @@ export const PhotoGlobe = () => {
       tracking-[0.3em]
     "
         >
-          Drag To Explore
+          (Drag To Explore)
         </div>
       </div>
     </section>

@@ -10,3 +10,13 @@
   opacity: 0;
   filter: blur(2px);
 }
+
+.floating-pill-1 {
+  top: 20%;
+  left: 12%;
+}
+
+.floating-pill-2 {
+  right: 10%;
+  bottom: 18%;
+}

@@ -245,8 +245,9 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="mx-auto flex min-h-screen w-full max-w-full items-center justify-center overflow-hidden px-6 py-16 sm:px-10 lg:px-16"
+      className="mx-auto flex min-h-screen w-full max-w-full items-center justify-center overflow-hidden px-6  sm:px-10 lg:px-16"
     >
+      
       <div className="relative flex w-full flex-col items-center justify-center">
         <div
           ref={titleRef}
