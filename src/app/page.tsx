@@ -6,8 +6,8 @@ import { ShowSection } from "@/components/sections/show-section";
 export default function Home() {
   return (
     <main className="w-full relative">
-      <HomeHorizontalStage />
       <ShowSection />
+      <HomeHorizontalStage />
       <ContentLayout />
       <Footer />
     </main>

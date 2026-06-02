@@ -12,7 +12,7 @@ const PHOTOS = [
   {
     id: 1,
     src: "/images/gallery/image-1.webp",
-    width: 420,
+    width: 400,
     height: 580,
   },
   {
@@ -24,7 +24,7 @@ const PHOTOS = [
   {
     id: 3,
     src: "/images/gallery/image-3.webp",
-    width: 520,
+    width: 350,
     height: 340,
   },
   {
@@ -36,13 +36,13 @@ const PHOTOS = [
   {
     id: 5,
     src: "/images/gallery/image-5.webp",
-    width: 460,
+    width: 260,
     height: 600,
   },
   {
     id: 6,
     src: "/images/gallery/image-6.webp",
-    width: 380,
+    width: 340,
     height: 260,
   },
   {
@@ -54,7 +54,7 @@ const PHOTOS = [
   {
     id: 8,
     src: "/images/gallery/image-8.webp",
-    width: 540,
+    width: 340,
     height: 360,
   },
   {
@@ -66,8 +66,86 @@ const PHOTOS = [
   {
     id: 10,
     src: "/images/gallery/image-10.webp",
-    width: 620,
+    width: 290,
     height: 420,
+  },
+  {
+    id: 11,
+    src: "/images/gallery/image-11.webp",
+    width: 360,
+    height: 520,
+  },
+  {
+    id: 12,
+    src: "/images/gallery/image-12.webp",
+    width: 340,
+    height: 360,
+  },
+  {
+    id: 13,
+    src: "/images/gallery/image-13.webp",
+    width: 300,
+    height: 430,
+  },
+  {
+    id: 14,
+    src: "/images/gallery/image-14.webp",
+    width: 360,
+    height: 300,
+  },
+  {
+    id: 15,
+    src: "/images/gallery/image-15.webp",
+    width: 320,
+    height: 560,
+  },
+  {
+    id: 16,
+    src: "/images/gallery/image-16.webp",
+    width: 340,
+    height: 280,
+  },
+  {
+    id: 17,
+    src: "/images/gallery/image-17.webp",
+    width: 320,
+    height: 460,
+  },
+  {
+    id: 18,
+    src: "/images/gallery/image-18.webp",
+    width: 280,
+    height: 140,
+  },
+  {
+    id: 19,
+    src: "/images/gallery/image-19.webp",
+    width: 360,
+    height: 540,
+  },
+  {
+    id: 20,
+    src: "/images/gallery/image-20.webp",
+    width: 290,
+    height: 400,
+  },
+  {
+    id: 21,
+    src: "/images/gallery/image-21.webp",
+    width: 340,
+    height: 500,
+  },
+  {
+    id: 22,
+    src: "/images/gallery/image-22.webp",
+    width: 320,
+    height: 320,
+  },
+  {
+    id: 23,
+    src: "/images/gallery/image-23.webp",
+    width: 370,
+    height: 620,
   },
 ];
 
@@ -97,19 +175,39 @@ export const PhotoGlobe = () => {
      * đẹp hơn random hoàn toàn
      */
     const layout = [
-      { x: -450, y: -220, z: 700 },
-      { x: -150, y: -120, z: 500 },
-      { x: 280, y: -180, z: 800 },
-      { x: 480, y: 50, z: 300 },
+      // ===== VERY FRONT =====
+      { x: -850, y: -320, z: 900 },
+      { x: -300, y: -180, z: 700 },
+      { x: 320, y: -250, z: 1000 },
+      { x: 900, y: -100, z: 800 },
 
-      { x: -380, y: 250, z: -100 },
-      { x: -80, y: 280, z: 250 },
+      { x: -700, y: 320, z: 750 },
+      { x: 100, y: 450, z: 950 },
+      { x: 720, y: 380, z: 800 },
 
-      { x: 280, y: 250, z: 700 },
-      { x: 500, y: 320, z: -200 },
+      // ===== FRONT =====
+      { x: -550, y: -520, z: 700 },
+      { x: -50, y: -600, z: 800 },
+      { x: 520, y: -500, z: 600 },
 
-      { x: -100, y: -350, z: 600 },
-      { x: 150, y: -320, z: -300 },
+      { x: -850, y: 50, z: 500 },
+      { x: -250, y: 120, z: 650 },
+      { x: 350, y: 80, z: 700 },
+      { x: 900, y: 120, z: 550 },
+
+      // ===== MIDDLE =====
+      { x: -650, y: 550, z: 250 },
+      { x: -100, y: 700, z: 300 },
+      { x: 450, y: 620, z: 200 },
+
+      { x: -450, y: -780, z: 350 },
+      { x: 150, y: -850, z: 150 },
+
+      // ===== BACK =====
+      { x: -900, y: -200, z: -700 },
+      { x: -350, y: 650, z: -600 },
+      { x: 350, y: -650, z: -800 },
+      { x: 950, y: 450, z: -500 },
     ];
 
     PHOTOS.forEach((photo, index) => {
@@ -175,23 +273,26 @@ export const PhotoGlobe = () => {
           z1 * cosX +
           base.y * sinX;
 
-        const depth =
+        const depth = gsap.utils.clamp(
+          0.45,
+          0.8,
           perspective /
-          (perspective - z2);
+          (perspective - z2)
+        );
 
         const normalizedZ =
-  gsap.utils.normalize(
-    -800,
-    1200,
-    z2
-  );
+          gsap.utils.normalize(
+            -800,
+            1000,
+            z2
+          );
 
-const scaleValue =
-  gsap.utils.interpolate(
-    0.55,
-    1,
-    normalizedZ
-  );
+        const scaleValue =
+          gsap.utils.interpolate(
+            0.55,
+            0.8,
+            normalizedZ
+          );
 
         gsap.set(item, {
           x: x1 * depth,
@@ -334,7 +435,6 @@ const scaleValue =
               w-full
               h-full
               object-cover
-              grayscale
               brightness-75
               hover:grayscale-0
               hover:brightness-100
@@ -345,6 +445,42 @@ const scaleValue =
             />
           </div>
         ))}
+      </div>
+      <div
+        className="
+    absolute
+    top-1/2
+    left-1/2
+    -translate-x-1/2
+    -translate-y-1/2
+    text-center
+    pointer-events-none
+    z-[999999]
+    mix-blend-difference
+  "
+      >
+        <div
+          className="
+      text-4xl
+      font-secondary
+      text-white
+      tracking-wide
+    "
+        >
+          A Software Design Studio
+        </div>
+
+        <div
+          className="
+      mt-2
+      text-sm
+      font-primary
+      text-white
+      tracking-[0.3em]
+    "
+        >
+          Drag To Explore
+        </div>
       </div>
     </section>
   );

@@ -136,7 +136,7 @@ export function HomeHorizontalStage() {
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div ref={trackRef} className="flex h-full w-max justify-center will-change-transform">
-          <div className="flex h-full w-[80vw] items-end justify-start pl-10 pb-10">
+          <div className="flex w-screen h-full items-center justify-center">
             <Hero />
           </div>
           <div className="flex h-full myself-section">

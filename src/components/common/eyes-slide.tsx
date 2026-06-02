@@ -26,15 +26,15 @@ export const EyesSlide = () => {
     }, [frames.length]);
 
     return (
-        <div className="flex h-full items-center">
+        <div className="flex h-full items-center justify-between">
             <div>*(</div>
-            <div className="pt-4 pl-2">
+            <div className="pt-4 pl-2 aspect-square">
                 <Image
                     src={frames[frameIndex]}
                     alt="Eyes Slide"
-                    width={120}
-                    height={120}
-                    className="object-contain interactive"
+                    width={100}
+                    height={100}
+                    className="object-contain interactive aspect-square"
                     priority
                 />
             </div>
