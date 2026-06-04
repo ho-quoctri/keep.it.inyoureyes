@@ -56,8 +56,9 @@ export const MyselfSection = ({
           autoPlay
           muted
           loop
+          property={'true'}
           playsInline
-          preload="auto"
+          preload={"auto"}
           data-shared-video-target="true"
           className="w-full h-full object-cover"
           style={{ transformOrigin: "center center" }}

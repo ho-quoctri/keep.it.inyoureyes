@@ -120,6 +120,20 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} ${dirtylineFont.variable} ${stretchFont.variable} ${satoshi.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          rel="preload"
+          href="/videos/myself-video.webm"
+          as="video"
+          type="video/webm"
+        />
+        <link
+          rel="preload"
+          href="/images/gallery/image-1.webp"
+          as="image"
+          type="image/webp"
+        />
+      </head>
       <body className="min-h-full bg-background text-foreground">
         {/* <LenisSmoothScrollWrapper> */}
           <SitePreloaderProvider>

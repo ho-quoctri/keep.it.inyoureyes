@@ -470,44 +470,50 @@ export const PhotoGlobe = ({
             "preserve-3d",
         }}
       >
-        {PHOTOS.map((photo: PhotoMedia) => (
-          <div
-            key={photo.id}
-            className="
-              globe-item
-              absolute
-              w-50
-              h-auto
-              overflow-hidden
-              shadow-xl
-              group
-            "
-            style={{
-              willChange:
-                "transform",
-            }}
-          >
-            <Image
-              src={photo.src}
-              alt={`Project ${photo.id}`}
-              width={photo.width}
-              height={photo.height}
-              priority={true}
-              draggable={false}
+        {PHOTOS.map((photo: PhotoMedia) => {
+          const shouldPrioritizeImage = photo.id === 1;
+
+          return (
+            <div
+              key={photo.id}
               className="
-              w-full
-              h-auto
-              object-cover
-              brightness-75
-              hover:grayscale-0
-              hover:brightness-100
-              transition-all
-              duration-700
-              ease-out
-            "
-            />
-          </div>
-        ))}
+                globe-item
+                absolute
+                w-50
+                h-auto
+                overflow-hidden
+                shadow-xl
+                group
+              "
+              style={{
+                willChange:
+                  "transform",
+              }}
+            >
+              <Image
+                src={photo.src}
+                alt={`Project ${photo.id}`}
+                width={photo.width}
+                height={photo.height}
+                priority={shouldPrioritizeImage}
+                loading={shouldPrioritizeImage ? "eager" : "lazy"}
+                fetchPriority={shouldPrioritizeImage ? "high" : "low"}
+                draggable={false}
+                className="
+                w-full
+                h-auto
+                object-cover
+                brightness-75
+                hover:grayscale-0
+                hover:brightness-100
+                transition-all
+                duration-700
+                ease-out
+              "
+              />
+            </div>
+          );
+        })}
       </div>
       <div
         className="
