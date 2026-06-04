@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { Navbar } from '@/components/layout/navbar';
 import { WorkSection } from '@/components/sections/work-section';
 import { AboutSection } from '@/components/sections/about-section';
-import { ContactSection } from '@/components/sections/contact-section';
 import { gsap } from "@/lib/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -79,9 +78,6 @@ export default function ContentLayout() {
         </div>
         <div ref={aboutRef} id="section-1" className="min-h-screen py-16">
           <AboutSection />
-        </div>
-        <div ref={contactRef} id="section-2" className="min-h-screen py-16">
-          <ContactSection />
         </div>
       </main>
     </div>

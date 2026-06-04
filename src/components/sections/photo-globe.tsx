@@ -412,7 +412,7 @@ export const PhotoGlobe = ({
   onComplete: startAutoRotate,
 })
 .to(targetRotation, {
-  y: 600, // 2 vòng
+  y: 520, // 2 vòng
   duration: 2.8,
   ease: "power2.out",
 }, 0);
@@ -492,6 +492,7 @@ export const PhotoGlobe = ({
               alt={`Project ${photo.id}`}
               width={photo.width}
               height={photo.height}
+              priority={true}
               draggable={false}
               className="
               w-full
