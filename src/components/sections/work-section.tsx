@@ -1,11 +1,31 @@
-export function WorkSection() {
+import Image from "next/image";
+
+type WorkSectionProps = {
+  project: {
+    name: string;
+    thumbnail: string;
+    desc: string;
+  };
+  index: number;
+};
+
+export function WorkSection({
+  project,
+  index,
+}: WorkSectionProps) {
   return (
-    <section className="work-section h-screen mx-auto w-full max-w-6xl px-6 py-16">
-      <h2 className="text-3xl">Work</h2>
-      <p className="mt-2 text-2xl text-accent-soft">Project titles / notes</p>
-      <p className="mt-4 text-muted">
-        This section now follows the same default font setup as the rest of the site.
-      </p>
-    </section>
+    <div className="h-full relative w-[80%] flex flex-col justify-end  gap-8">
+      <div className="font-secondary absolute right-0 top-0 z-30 text-[40px] lg:text-[80px]">(0{index + 1})</div>
+      <div className="font-primary font-bold text-lg lg:text-xl w-full text-left max-w-[70%] lg:max-w-[50%]">{project.desc}</div>
+      <div className="relative aspect-[1920/1080] w-full">
+        <Image
+          src={project.thumbnail}
+          alt={`${project.name} ${index + 1}`}
+          fill
+          priority={true}
+          className="object-cover hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+    </div>
   );
 }

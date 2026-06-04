@@ -19,8 +19,8 @@ export function useScrambleText({
   enabled = true,
   selector = "[data-scramble-text]",
   scrambleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&",
-  scrambleDuration = 0.9,
-  entranceDuration = 0.45,
+  scrambleDuration = 3,
+  entranceDuration = 0.6,
   entranceY = 22,
   overlap = 0.2,
 }: UseScrambleTextOptions) {

@@ -533,7 +533,7 @@ export const PhotoGlobe = ({
       tracking-wide
     "
         >
-          creative studio
+          Creative Studio
         </div>
 
         <div

@@ -44,7 +44,7 @@ export const MyselfSection = ({
   return (
     <section
       ref={(node) => assignRef(sectionRef, node)}
-      className="mx-auto flex min-h-[140svh] w-screen flex-col items-center justify-start gap-16 px-6 py-24"
+      className="mx-auto flex min-h-fit md:min-h-[140svh] w-screen flex-col items-center justify-start gap-16 px-6 py-16 md:py-24"
     >
       <div
         ref={(node) => assignRef(videoContainerRef, node)}
