@@ -208,6 +208,7 @@ export const PhotoGlobe = ({
     const globe = globeRef.current;
 
     if (!globe) return;
+    if (isLoading) return;
 
     const items = globe.querySelectorAll(".globe-item");
 
@@ -406,8 +407,6 @@ export const PhotoGlobe = ({
       },
     });
     
-  if (isLoading) return;
-
   gsap.timeline({
   onComplete: startAutoRotate,
 })
@@ -498,6 +497,7 @@ export const PhotoGlobe = ({
                 priority={shouldPrioritizeImage}
                 loading={shouldPrioritizeImage ? "eager" : "lazy"}
                 fetchPriority={shouldPrioritizeImage ? "high" : "low"}
+                sizes="200px"
                 draggable={false}
                 className="
                 w-full
@@ -556,7 +556,7 @@ export const PhotoGlobe = ({
               muted
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
               data-shared-video-source="true"
               className="h-full w-full scale-125 object-cover"
             />

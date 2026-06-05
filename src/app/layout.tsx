@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../styles/globals.css";
+import { DecorativeOverlays } from "@/components/common/decorative-overlays";
 import { SitePreloaderProvider } from "@/components/providers/site-preloader-provider";
 import { SitePageShell } from "@/components/layout/site-page-shell";
-import { CustomCursor } from "@/components/common/custom-cursor";
-import { TrackedOverlay } from "@/components/common/tracked-overlay";
-import { GridRuler } from "@/components/common/grid-ruler";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
 import { satoshi } from "./fonts";
 
 const inter = localFont({
@@ -87,25 +91,56 @@ const stretchFont = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "keep.it.inyoureyes | A creative design studio",
-  description:
-    "A creative design studio specializing in digital editorial projects, built with Next.js, Tailwind CSS, GSAP, and Lenis.",
-  applicationName: "keep.it.inyoureyes",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} | Digital editorial portfolio`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
   keywords: [
-    "creative design studio",
-    "digital art direction",
+    "digital editorial portfolio",
+    "creative direction portfolio",
     "motion design",
+    "editorial web design",
     "next.js",
     "gsap",
   ],
-  authors: [{ name: "keep.it.inyoureyes" }],
-  creator: "keep.it.inyoureyes",
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: "keep.it.inyoureyes | A creative design studio",
-    description:
-      "Editorial web presence with intentional motion, smooth scrolling, and refined typography.",
+    title: `${SITE_NAME} | Digital editorial portfolio`,
+    description: SITE_DESCRIPTION,
     type: "website",
-    siteName: "keep.it.inyoureyes",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        alt: `${SITE_NAME} brand mark`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | Digital editorial portfolio`,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
@@ -123,12 +158,6 @@ export default function RootLayout({
       <head>
         <link
           rel="preload"
-          href="/videos/myself-video.webm"
-          as="video"
-          type="video/webm"
-        />
-        <link
-          rel="preload"
           href="/images/gallery/image-1.webp"
           as="image"
           type="image/webp"
@@ -140,9 +169,7 @@ export default function RootLayout({
             <SitePageShell>{children}</SitePageShell>
           </SitePreloaderProvider>
         {/* </LenisSmoothScrollWrapper> */}
-        <CustomCursor/>
-        <TrackedOverlay />
-        <GridRuler />
+        <DecorativeOverlays />
       </body>
     </html>
   );

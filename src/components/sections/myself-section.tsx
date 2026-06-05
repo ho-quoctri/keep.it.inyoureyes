@@ -58,7 +58,7 @@ export const MyselfSection = ({
           loop
           property={'true'}
           playsInline
-          preload={"auto"}
+          preload="metadata"
           data-shared-video-target="true"
           className="w-full h-full object-cover"
           style={{ transformOrigin: "center center" }}

@@ -13,6 +13,8 @@ export function WorkSection({
   project,
   index,
 }: WorkSectionProps) {
+  const shouldPrioritizeImage = index === 0;
+
   return (
     <div className="h-full relative w-[80%] flex flex-col justify-end  gap-8">
       <div className="font-secondary absolute right-0 top-0 z-30 text-[40px] lg:text-[80px]">(0{index + 1})</div>
@@ -22,7 +24,8 @@ export function WorkSection({
           src={project.thumbnail}
           alt={`${project.name} ${index + 1}`}
           fill
-          priority={true}
+          priority={shouldPrioritizeImage}
+          sizes="(min-width: 1024px) 56vw, 80vw"
           className="object-cover hover:scale-105 transition-transform duration-300"
         />
       </div>

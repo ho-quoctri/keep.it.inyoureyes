@@ -5,14 +5,26 @@ import gsap from "gsap";
 import { BrandName } from "@/components/common/brand-name";
 
 type PreloaderProps = {
+  canFinish: boolean;
   finishLoading: () => void;
 };
 
-export function Preloader({ finishLoading }: PreloaderProps) {
+export function Preloader({ canFinish, finishLoading }: PreloaderProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const canFinishRef = useRef(canFinish);
+
+  useEffect(() => {
+    canFinishRef.current = canFinish;
+
+    const timeline = timelineRef.current;
+    if (canFinish && timeline?.paused()) {
+      timeline.resume();
+    }
+  }, [canFinish]);
 
   useEffect(() => {
     if (!wrapperRef.current || !fillRef.current || !brandRef.current || !progressRef.current) return;
@@ -43,11 +55,18 @@ export function Preloader({ finishLoading }: PreloaderProps) {
       const wrapperEl = wrapperRef.current!;
 
       const progressTimeline = gsap.timeline();
+      timelineRef.current = progressTimeline;
 
       progressTimeline.to(fillEl, {
         scaleX: 0.84,
         duration: 1.9,
         ease: "power2.inOut",
+      });
+
+      progressTimeline.call(() => {
+        if (!canFinishRef.current) {
+          progressTimeline.pause();
+        }
       });
 
       progressTimeline.to(fillEl, {
@@ -94,6 +113,8 @@ export function Preloader({ finishLoading }: PreloaderProps) {
     }, wrapperRef);
 
     return () => {
+      timelineRef.current?.kill();
+      timelineRef.current = null;
       ctx.revert();
     };
   }, [finishLoading]);

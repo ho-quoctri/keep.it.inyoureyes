@@ -34,6 +34,7 @@ export const EyesSlide = () => {
                     alt="Eyes Slide"
                     width={100}
                     height={100}
+                    sizes="100px"
                     className="object-contain interactive aspect-square"
                     priority
                 />
