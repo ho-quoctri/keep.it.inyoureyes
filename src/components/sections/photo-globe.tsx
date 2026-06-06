@@ -533,7 +533,7 @@ export const PhotoGlobe = ({
       flex
       items-center
       justify-center
-      text-4xl
+      text-2xl md:text-4xl
       font-secondary
       text-white
       tracking-wide
@@ -567,7 +567,7 @@ export const PhotoGlobe = ({
           ref={(node) => assignRef(dragHintRef, node)}
           className="
       mt-2
-      text-sm
+      text-xs md:text-sm
       font-primary
       text-white
       tracking-[0.3em]

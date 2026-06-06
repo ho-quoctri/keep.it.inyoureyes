@@ -56,7 +56,7 @@ export default function WorksLayout() {
   }, []);
 
   return (
-    <div className="flex px-10 flex-col lg:flex-row w-screen h-screen overflow-hidden bg-background relative">
+    <div className="flex px-4 md:px-10 flex-col lg:flex-row w-screen h-screen overflow-hidden bg-background relative">
       <aside className="lg:w-[30vw] h-auto lg:h-full pt-[20%] lg:pt-0 lg:pr-10 flex flex-col justify-center border-r border-white/5 z-10">
         <Navbar
           ref={navbarRef}
