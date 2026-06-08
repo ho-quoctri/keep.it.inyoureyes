@@ -17,7 +17,7 @@ export function WorkSection({
 
   return (
     <div className="h-full relative w-[86%] md:w-[80%] flex flex-col justify-end  gap-8">
-      <div className="font-secondary absolute right-0 top-0 z-30 text-[40px] lg:text-[80px]">(0{index + 1})</div>
+      <div className="font-secondary absolute right-0 top-0 z-30 text-[28px] md:text-[40px] lg:text-[80px]">(0{index + 1})</div>
       <div className="font-primary font-bold text-sm md:text-lg lg:text-xl w-full text-left max-w-[70%] lg:max-w-[50%]">{project.desc}</div>
       <div className="relative aspect-[1920/1080] w-full">
         <Image

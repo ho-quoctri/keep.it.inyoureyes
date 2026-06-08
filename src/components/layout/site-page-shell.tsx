@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { BrandName } from "@/components/common/brand-name";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +14,14 @@ type SitePageShellProps = {
 
 export function SitePageShell({ children, currentYear }: SitePageShellProps) {
   const router = useRouter();
-  const pathname = usePathname();
+  const rawPathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const pathname = mounted ? rawPathname : "/";
 
 
   return (
